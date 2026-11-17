@@ -11,7 +11,7 @@ pipeline {
     stage('Build & Tests') {
       steps {
         // TODO A : construire et tester en mode batch
-        sh 'echo "Maven build & tests"'
+        sh 'mvn -B clean verify'
       }
     }
     stage('Publish') {
@@ -19,13 +19,19 @@ pipeline {
         // TODO B : injecter le credential 'nexus-deploy'
         //          dans NEXUS_USER / NEXUS_PASSWORD, puis pub lier
         //          avec ci-settings.xml vers $NEXUS_URL
-                sh 'echo "publish to Nexus"'
+        withCredentials([usernamePassword(credentialsId: 'nexus-deploy',
+        usernameVariable: 'NEXUS_USER',
+                         passwordVariable: 'NEXUS_PASSWORD')]) {
+          sh 'mvn -B -s ci-settings.xml -DskipTests -Dnexus.url=$NEXUS_URL deploy'
+        }
       }
     }
   }
 
-  // post {
-  //   // TODO C : toujours publier les rapports de tests
-  //   // TODO D : en cas de succès, archiver le JAR
-  // }
+  post {
+      // TODO C : toujours publier les rapports de tests
+      // TODO D : en cas de succès, archiver le JAR
+      always  { junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml' }
+    success { archiveArtifacts artifacts: 'target/*.jar', fingerprint: true }
+  }
 }
