@@ -14,6 +14,20 @@ pipeline {
         sh 'mvn -B clean verify'
       }
     }
+    stage('SonarQube Analysis') {
+      steps {
+        withSonarQubeEnv('sonarqube') {
+          sh 'mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=demo-ci'
+        }
+      }
+    }
+    stage('Quality Gate') {
+    steps {
+        timeout(time: 10, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+    }
+    }
     stage('Publish') {
       steps {
         // TODO B : injecter le credential 'nexus-deploy'
