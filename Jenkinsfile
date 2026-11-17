@@ -17,16 +17,17 @@ pipeline {
     stage('SonarQube Analysis') {
       steps {
         withSonarQubeEnv('sonarqube') {
-          sh 'mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=demo-ci'
+          sh  mvn -B 'org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar  -Dsonar.projectKey=demo-ci  -Dsonar.token="$SONAR_AUTH_TOKEN"'
+                  
         }
       }
     }
     stage('Quality Gate') {
-    steps {
+      steps {
         timeout(time: 10, unit: 'MINUTES') {
           waitForQualityGate abortPipeline: true
         }
-    }
+      }
     }
     stage('Publish') {
       steps {
