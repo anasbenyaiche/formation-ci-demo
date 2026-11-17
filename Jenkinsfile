@@ -11,13 +11,15 @@ pipeline {
     stage('Build & Tests') {
       steps {
         // TODO A : construire et tester en mode batch
+        sh 'echo "Maven build & tests"'
       }
     }
     stage('Publish') {
       steps {
         // TODO B : injecter le credential 'nexus-deploy'
-        //          dans NEXUS_USER / NEXUS_PASSWORD, puis publier
+        //          dans NEXUS_USER / NEXUS_PASSWORD, puis pub lier
         //          avec ci-settings.xml vers $NEXUS_URL
+                sh 'echo "publish to Nexus"'
       }
     }
   }
