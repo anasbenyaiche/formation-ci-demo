@@ -13,7 +13,7 @@
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <env>dev</env>
-     <nexus.url>http://localhost:8081</nexus.url>
+    <nexus.url>http://localhost:8081</nexus.url>
   </properties>
 
   <dependencies>
